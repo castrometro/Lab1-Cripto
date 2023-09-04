@@ -1,23 +1,33 @@
-import argparse
+import sys
 
-def cifrado_cesar(texto, corrimiento):
-    resultado = ''
-    for caracter in texto:
-        if caracter.isalpha():
-            if caracter.islower():
-                nuevo_caracter = chr(((ord(caracter) - ord('a') + corrimiento) % 26) + ord('a'))
-            else:
-                nuevo_caracter = chr(((ord(caracter) - ord('A') + corrimiento) % 26) + ord('A'))
+def cifrado_cesar(texto, rotacion):
+    # Definimos el abecedario español
+    abecedario = 'abcdefghijklmnñopqrstuvwxyz'
+    cifrado = ''
+    
+    # Convertimos el texto a minúsculas para tratar mayúsculas y minúsculas de la misma manera
+    texto = texto.lower()
+    
+    for char in texto:
+        if char in abecedario:
+            # Obtenemos la posición del caracter en el abecedario
+            pos_original = abecedario.index(char)
+            
+            # Calculamos la nueva posición con la rotación
+            nueva_pos = (pos_original + rotacion) % len(abecedario)
+            
+            # Añadimos el nuevo caracter al texto cifrado
+            cifrado += abecedario[nueva_pos]
         else:
-            nuevo_caracter = caracter
-        resultado += nuevo_caracter
-    return resultado
+            # Si el caracter no está en el abecedario, lo añadimos sin cambiarlo
+            cifrado += char
+    
+    return cifrado
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Cifrado César en Python')
-    parser.add_argument('texto', type=str, help='Texto a cifrar')
-    parser.add_argument('corrimiento', type=int, help='Número de corrimiento')
-    args = parser.parse_args()
+    # Obtener el texto y la rotación desde los argumentos de línea de comandos
+    texto = sys.argv[1]
+    rotacion = int(sys.argv[2])
     
-    texto_cifrado = cifrado_cesar(args.texto, args.corrimiento)
-    print('Texto cifrado:', texto_cifrado)
+    resultado = cifrado_cesar(texto, rotacion)
+    print(resultado)
